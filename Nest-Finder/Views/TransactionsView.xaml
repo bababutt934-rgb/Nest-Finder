@@ -1,0 +1,433 @@
+<UserControl x:Class="NestFinder.Views.TransactionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:icon="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1000"
+             Background="{StaticResource MainBgBrush}">
+
+    <UserControl.Resources>
+        <!-- Style for ScrollBar Page RepeatButtons (transparent background) -->
+        <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="Transparent"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for ScrollBar Thumb -->
+        <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border x:Name="rectangle"
+                                Background="#00BFA5"
+                                CornerRadius="4"
+                                SnapsToDevicePixels="True"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="rectangle" Property="Background" Value="#33FFD3"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="true">
+                                <Setter TargetName="rectangle" Property="Background" Value="#00FFC8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Universal ScrollBar Style (both vertical and horizontal) -->
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Background" Value="#161B22"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="10"/>
+                    <Setter Property="Height" Value="Auto"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                <Grid x:Name="Bg" SnapsToDevicePixels="true" Background="#161B22">
+                                    <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsEnabled}">
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ScrollBarPageButton}"/>
+                                        </Track.DecreaseRepeatButton>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ScrollBarPageButton}"/>
+                                        </Track.IncreaseRepeatButton>
+                                        <Track.Thumb>
+                                            <Thumb Style="{StaticResource ScrollBarThumbStyle}" Margin="1,0,1,0"/>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="10"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                <Grid x:Name="Bg" SnapsToDevicePixels="true" Background="#161B22">
+                                    <Track x:Name="PART_Track" IsDirectionReversed="false" IsEnabled="{TemplateBinding IsEnabled}">
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Style="{StaticResource ScrollBarPageButton}"/>
+                                        </Track.DecreaseRepeatButton>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}" Style="{StaticResource ScrollBarPageButton}"/>
+                                        </Track.IncreaseRepeatButton>
+                                        <Track.Thumb>
+                                            <Thumb Style="{StaticResource ScrollBarThumbStyle}" Margin="0,1,0,1"/>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="30,30,20,20">
+        <Grid.RowDefinitions>
+            <!-- Title Bar -->
+            <RowDefinition Height="Auto" />
+            <!-- Filters -->
+            <RowDefinition Height="Auto" />
+            <!-- Grid -->
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock x:Name="TxtTitle" 
+                           Text="ALL TRANSACTIONS" 
+                           Foreground="{StaticResource TextPrimaryBrush}" 
+                           FontFamily="{StaticResource SegoeUIFont}" 
+                           FontSize="28" 
+                           FontWeight="Bold"/>
+                <TextBlock Text="View financial transactions for property sales and leases." 
+                           Foreground="{StaticResource TextMutedBrush}" 
+                           FontFamily="{StaticResource SegoeUIFont}" 
+                           FontSize="13" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!-- Export to CSV Button (Admin Only) -->
+            <Button x:Name="BtnExport" 
+                    Grid.Column="1" 
+                    Style="{StaticResource SecondaryButtonStyle}" 
+                    Content="Export CSV" 
+                    Width="120" 
+                    Height="38" 
+                    VerticalAlignment="Center"
+                    Click="BtnExport_Click"
+                    Visibility="Collapsed"/>
+        </Grid>
+
+        <!-- Filters -->
+        <Border Grid.Row="1" Style="{StaticResource CardStyle}" Padding="15" Margin="0,0,0,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="20" />
+                    <!-- From Date -->
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="15" />
+                    <!-- To Date -->
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Type -->
+                <ComboBox x:Name="CmbType" 
+                          Grid.Column="0" 
+                          Height="36" 
+                          Background="{StaticResource MainBgBrush}" 
+                          BorderBrush="{StaticResource BorderBrush}" 
+                          Foreground="White"
+                          VerticalContentAlignment="Center">
+                    <ComboBoxItem Content="All Types" IsSelected="True" />
+                    <ComboBoxItem Content="Buy" />
+                    <ComboBoxItem Content="Rent" />
+                </ComboBox>
+
+                <!-- Status -->
+                <ComboBox x:Name="CmbStatus" 
+                          Grid.Column="2" 
+                          Height="36" 
+                          Background="{StaticResource MainBgBrush}" 
+                          BorderBrush="{StaticResource BorderBrush}" 
+                          Foreground="White"
+                          VerticalContentAlignment="Center">
+                    <ComboBoxItem Content="All Status" IsSelected="True" />
+                    <ComboBoxItem Content="Pending" />
+                    <ComboBoxItem Content="Completed" />
+                    <ComboBoxItem Content="Cancelled" />
+                </ComboBox>
+
+                <!-- Dates -->
+                <TextBlock Grid.Column="4" Text="From:" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <DatePicker x:Name="DtpFrom" Grid.Column="5" Height="36" VerticalAlignment="Center"/>
+
+                <TextBlock Grid.Column="7" Text="To:" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <DatePicker x:Name="DtpTo" Grid.Column="8" Height="36" VerticalAlignment="Center"/>
+
+                <Button Grid.Column="10" 
+                        Style="{StaticResource PrimaryButtonStyle}" 
+                        Content="Filter" 
+                        Width="90" 
+                        Height="36" 
+                        Click="BtnFilter_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Transactions Grid -->
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="15">
+            <DataGrid x:Name="TransactionsGrid"
+                      AutoGenerateColumns="False"
+                      Background="Transparent"
+                      RowBackground="#1C2333"
+                      AlternatingRowBackground="#161B22"
+                      BorderThickness="0"
+                      GridLinesVisibility="None"
+                      HeadersVisibility="Column"
+                      IsReadOnly="True"
+                      RowHeaderWidth="0"
+                      SelectionMode="Single"
+                      RowHeight="46"
+                      CanUserAddRows="False"
+                      CanUserResizeColumns="False"
+                      ColumnWidth="Auto"
+                      HorizontalAlignment="Stretch"
+                      Margin="0,12,0,0"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#0D1117" />
+                        <Setter Property="Foreground" Value="#8B949E" />
+                        <Setter Property="FontSize" Value="11" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="Padding" Value="10,8" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Height" Value="46"/>
+                        <Setter Property="ClipToBounds" Value="True"/>
+                        <Setter Property="Background" Value="#1C2333"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" 
+                                        Value="#232D3F"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" 
+                                        Value="#1A3A4A"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID"
+                                        Binding="{Binding TransactionID}"
+                                        Width="45"
+                                        IsReadOnly="True"/>
+
+                    <DataGridTextColumn Header="PROPERTY"
+                                        Binding="{Binding PropertyTitle}"
+                                        Width="*"
+                                        IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextTrimming" 
+                                        Value="CharacterEllipsis"/>
+                                <Setter Property="ToolTip" 
+                                        Value="{Binding PropertyTitle}"/>
+                                <Setter Property="VerticalAlignment" 
+                                        Value="Center"/>
+                                <Setter Property="Foreground" 
+                                        Value="White"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn x:Name="ColCustomer"
+                                        Header="CUSTOMER"
+                                        Binding="{Binding CustomerName}"
+                                        Width="110"
+                                        IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextTrimming" 
+                                        Value="CharacterEllipsis"/>
+                                <Setter Property="ToolTip" 
+                                        Value="{Binding CustomerName}"/>
+                                <Setter Property="VerticalAlignment" 
+                                        Value="Center"/>
+                                <Setter Property="Foreground" 
+                                        Value="#8B949E"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn Header="TYPE"
+                                        Binding="{Binding TransactionType}"
+                                        Width="60"
+                                        IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" 
+                                        Value="Center"/>
+                                <Setter Property="HorizontalAlignment" 
+                                        Value="Center"/>
+                                <Setter Property="Foreground" 
+                                        Value="#8B949E"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <!-- AMOUNT: fixed width, teal color, no truncation -->
+                    <DataGridTextColumn Header="AMOUNT"
+                                        Binding="{Binding AmountFormatted}"
+                                        Width="140"
+                                        MinWidth="140"
+                                        IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" 
+                                        Value="#00FFC8"/>
+                                <Setter Property="FontWeight" 
+                                        Value="SemiBold"/>
+                                <Setter Property="VerticalAlignment" 
+                                        Value="Center"/>
+                                <Setter Property="HorizontalAlignment" 
+                                        Value="Right"/>
+                                <Setter Property="Margin" 
+                                        Value="0,0,8,0"/>
+                                <Setter Property="TextWrapping" 
+                                        Value="NoWrap"/>
+                                <Setter Property="TextTrimming" 
+                                        Value="None"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <!-- DATE: wide enough to show full date -->
+                    <DataGridTextColumn Header="DATE"
+                                        Binding="{Binding DateFormatted}"
+                                        Width="110"
+                                        IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" 
+                                        Value="#8B949E"/>
+                                <Setter Property="VerticalAlignment" 
+                                        Value="Center"/>
+                                <Setter Property="HorizontalAlignment" 
+                                        Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <!-- Payment Status and Method Column -->
+                    <DataGridTemplateColumn Header="PAYMENT" 
+                                            Width="150"
+                                            IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,0,0">
+
+                                    <!-- Paid/Unpaid badge -->
+                                    <Border CornerRadius="4"
+                                            Padding="8,3"
+                                            VerticalAlignment="Center"
+                                            Background="{Binding PaymentStatus,
+                                                Converter={StaticResource 
+                                                PaymentStatusBgConverter}}"
+                                            BorderThickness="1"
+                                            BorderBrush="{Binding PaymentStatus,
+                                                Converter={StaticResource 
+                                                PaymentStatusBrushConverter}}">
+                                        <TextBlock
+                                            Text="{Binding PaymentStatus}"
+                                            FontSize="11"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center"
+                                            Foreground="{Binding PaymentStatus,
+                                                Converter={StaticResource 
+                                                PaymentStatusBrushConverter}}"/>
+                                    </Border>
+
+                                    <!-- Method text (Cash/Online) 
+                                         shown right of badge, 
+                                         only when not empty -->
+                                    <TextBlock
+                                        Text="{Binding PaymentMethod}"
+                                        FontSize="10"
+                                        Foreground="#8B949E"
+                                        VerticalAlignment="Center"
+                                        Margin="6,0,0,0"
+                                        Visibility="{Binding PaymentMethod,
+                                            Converter={StaticResource 
+                                            NullToCollapsedConverter}}"/>
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Action column (Admin Only) -->
+                    <DataGridTemplateColumn x:Name="ColAction" Header="ACTION" Width="130" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Mark as Paid"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Height="28"
+                                        FontSize="10"
+                                        Padding="8,0"
+                                        Tag="{Binding}"
+                                        Visibility="{Binding PaymentStatus, Converter={StaticResource UnpaidToVisibleConverter}}"
+                                        Click="MarkAsPaid_Click"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Grid>
+</UserControl>

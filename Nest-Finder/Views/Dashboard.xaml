@@ -1,0 +1,342 @@
+<UserControl x:Class="NestFinder.Views.Dashboard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:icon="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1000">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid x:Name="DashboardBgContainer">
+            <Grid.Background>
+                <ImageBrush x:Name="ImgDbBackground" Stretch="UniformToFill" Opacity="0.12"/>
+            </Grid.Background>
+            <Border Background="#260D1117"/>
+        </Grid>
+
+        <Grid Margin="30,30,20,20">
+        <Grid.RowDefinitions>
+            <!-- Header Section -->
+            <RowDefinition Height="Auto" />
+            <!-- Space -->
+            <RowDefinition Height="20" />
+            <!-- Stats Row -->
+            <RowDefinition Height="Auto" />
+            <!-- Space -->
+            <RowDefinition Height="20" />
+            <!-- Tables / Details Area -->
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="DASHBOARD" 
+                       Foreground="{StaticResource TextPrimaryBrush}" 
+                       FontFamily="{StaticResource SegoeUIFont}" 
+                       FontSize="28" 
+                       FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                <TextBlock x:Name="TxtWelcomeSubtitle" 
+                           Text="Welcome back, System Admin!" 
+                           Foreground="{StaticResource TextMutedBrush}" 
+                           FontFamily="{StaticResource SegoeUIFont}" 
+                           FontSize="13" 
+                           VerticalAlignment="Center"/>
+                <Border x:Name="UserRoleBadge" 
+                        Background="#6C5CE7" 
+                        CornerRadius="4" 
+                        Padding="6,2" 
+                        Margin="10,0,0,0" 
+                        VerticalAlignment="Center">
+                    <TextBlock x:Name="TxtRoleBadgeText" 
+                               Text="Admin" 
+                               Foreground="White" 
+                               FontSize="11" 
+                               FontWeight="Bold"/>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Stats Cards Row (UniformGrid with equal column widths) -->
+        <UniformGrid Grid.Row="2" Columns="3" Margin="0">
+            <!-- Card 1: Total Properties -->
+            <Border Style="{StaticResource CardStyle}" Height="110" Margin="0,0,10,0">
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Total Properties" 
+                                   Foreground="{StaticResource TextMutedBrush}" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="13" 
+                                   FontWeight="SemiBold"/>
+                        <TextBlock x:Name="TxtTotalProperties" 
+                                   Text="0" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="28" 
+                                   FontWeight="Bold" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                    <icon:IconImage Grid.Column="1" Icon="Building" Foreground="{StaticResource TextMutedBrush}" Width="40" Height="40" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Card 2: Available -->
+            <Border Style="{StaticResource CardStyle}" Height="110" Margin="5,0,5,0">
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Available" 
+                                   Foreground="{StaticResource TextMutedBrush}" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="13" 
+                                   FontWeight="SemiBold"/>
+                        <TextBlock x:Name="TxtAvailableProperties" 
+                                   Text="0" 
+                                   Foreground="{StaticResource AccentTealBrush}" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="28" 
+                                   FontWeight="Bold" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                    <icon:IconImage Grid.Column="1" Icon="CheckCircle" Foreground="{StaticResource AccentTealBrush}" Width="40" Height="40" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Card 3: Sold / Rented -->
+            <Border Style="{StaticResource CardStyle}" Height="110" Margin="10,0,0,0">
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Sold / Rented" 
+                                   Foreground="{StaticResource TextMutedBrush}" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="13" 
+                                   FontWeight="SemiBold"/>
+                        <TextBlock x:Name="TxtSoldRentedProperties" 
+                                   Text="0" 
+                                   Foreground="{StaticResource AccentAmberBrush}" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="28" 
+                                   FontWeight="Bold" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                    <icon:IconImage Grid.Column="1" Icon="Tag" Foreground="{StaticResource AccentAmberBrush}" Width="40" Height="40" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+        </UniformGrid>
+
+        <!-- Main Details Scroll Area -->
+        <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.55*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="0.45*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Left Panel: Recent Transactions Table -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Top">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <icon:IconImage Icon="ExchangeAlt" Foreground="{StaticResource AccentTealBrush}" Width="16" Height="16" VerticalAlignment="Center"/>
+                        <TextBlock Text="Recent Transactions" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold" 
+                                   Margin="8,0,0,0" 
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <Border Style="{StaticResource CardStyle}" Padding="15">
+                        <DataGrid x:Name="TransactionsGrid"
+                                  AutoGenerateColumns="False"
+                                  Background="Transparent"
+                                  RowBackground="#1C2333"
+                                  AlternatingRowBackground="#161B22"
+                                  BorderThickness="0"
+                                  GridLinesVisibility="None"
+                                  HeadersVisibility="Column"
+                                  IsReadOnly="True"
+                                  ScrollViewer.CanContentScroll="False"
+                                  RowHeaderWidth="0"
+                                  SelectionMode="Single"
+                                  CanUserResizeColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserReorderColumns="False">
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#0D1117" />
+                                    <Setter Property="Foreground" Value="#8B949E" />
+                                    <Setter Property="FontSize" Value="11" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="Padding" Value="10,8" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                </Style>
+                            </DataGrid.ColumnHeaderStyle>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Height" Value="42" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#2D3748" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#6C5CE7" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="PROPERTY" Binding="{Binding PropertyTitle}" Width="2*" />
+                                <DataGridTextColumn Header="AMOUNT" Binding="{Binding Amount, StringFormat=C0}" Width="1*" />
+                                <DataGridTextColumn Header="BUYER" Binding="{Binding CustomerName}" Width="1.5*" />
+                                <DataGridTemplateColumn Header="STATUS" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="4" Padding="6,2" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                                <Setter Property="Background" Value="#2000FFC8" />
+                                                                <Setter Property="BorderBrush" Value="#00FFC8" />
+                                                                <Setter Property="BorderThickness" Value="1" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                <Setter Property="Background" Value="#20F0A500" />
+                                                                <Setter Property="BorderBrush" Value="#F0A500" />
+                                                                <Setter Property="BorderThickness" Value="1" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                <Setter Property="Background" Value="#20FF4C4C" />
+                                                                <Setter Property="BorderBrush" Value="#FF4C4C" />
+                                                                <Setter Property="BorderThickness" Value="1" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding Status}" FontSize="11" FontWeight="Bold">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="#FFFFFF" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                                    <Setter Property="Foreground" Value="#00FFC8" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                    <Setter Property="Foreground" Value="#F0A500" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                    <Setter Property="Foreground" Value="#FF4C4C" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </StackPanel>
+
+                <!-- Right Panel: Upcoming Viewings Panel -->
+                <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <icon:IconImage Icon="Bell" Foreground="{StaticResource AccentAmberBrush}" Width="16" Height="16" VerticalAlignment="Center"/>
+                        <TextBlock Text="Upcoming Viewings" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold" 
+                                   Margin="8,0,0,0" 
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Viewings Cards List -->
+                    <ItemsControl x:Name="ViewingsItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#1C2333" CornerRadius="6" Height="70" Padding="15,12" Margin="0,0,0,8" BorderThickness="0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Row 0: Property Name + Badge -->
+                                        <TextBlock Grid.Row="0" Grid.Column="0" 
+                                                   Text="{Binding PropertyTitle}" 
+                                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                                   FontSize="13" 
+                                                   FontWeight="Bold"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                                   
+                                        <Border Grid.Row="0" Grid.Column="1" 
+                                                Background="#20F0A500" 
+                                                BorderBrush="#F0A500" 
+                                                BorderThickness="1" 
+                                                CornerRadius="4" 
+                                                Padding="6,2" 
+                                                VerticalAlignment="Center">
+                                             <TextBlock Foreground="#F0A500" 
+                                                       FontSize="10" 
+                                                       FontWeight="Bold">
+                                                 <TextBlock.Style>
+                                                     <Style TargetType="TextBlock">
+                                                         <Setter Property="Text" Value="{Binding Status}" />
+                                                         <Style.Triggers>
+                                                             <DataTrigger Binding="{Binding Status}" Value="Scheduled">
+                                                                 <Setter Property="Text" Value="Sched" />
+                                                             </DataTrigger>
+                                                         </Style.Triggers>
+                                                     </Style>
+                                                 </TextBlock.Style>
+                                             </TextBlock>
+                                        </Border>
+
+                                        <!-- Row 1: Subtext / Schedule Info -->
+                                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,4,0,0">
+                                            <TextBlock Text="Client: " Foreground="{StaticResource TextMutedBrush}" FontSize="11" />
+                                            <TextBlock Text="{Binding CustomerName}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="11" Margin="0,0,10,0"/>
+                                            <icon:IconBlock Icon="CalendarAlt" Foreground="{StaticResource TextMutedBrush}" FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                            <TextBlock Text="{Binding ViewingTime, StringFormat='yyyy-MM-dd HH:mm'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

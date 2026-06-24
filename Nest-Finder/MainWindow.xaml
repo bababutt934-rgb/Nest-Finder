@@ -1,0 +1,230 @@
+<mah:MetroWindow
+    x:Class="NestFinder.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+    Title="NEST-FINDER"
+    Height="800" Width="1280"
+    MinHeight="600" MinWidth="900"
+    WindowStartupLocation="CenterScreen"
+    ShowTitleBar="True"
+    ShowCloseButton="True"
+    ShowMinButton="True"
+    ShowMaxRestoreButton="True"
+    WindowStyle="SingleBorderWindow"
+    ResizeMode="CanResizeWithGrip"
+    Background="#0D1117"
+    Icon="pack://application:,,,/logo.png">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+
+    <Grid>
+        <!-- Hidden controls to preserve code-behind bindings -->
+        <TextBlock x:Name="TxtUserRoleBadge" Visibility="Collapsed" />
+        <TextBlock x:Name="TxtUserWelcome" Visibility="Collapsed" />
+
+        <!-- Main Workspace (Sidebar + Content view) -->
+        <Grid>
+            <!-- Background Image Container -->
+            <Grid x:Name="MainBgContainer">
+                <Grid.Background>
+                    <ImageBrush x:Name="ImgMainBackground" Stretch="UniformToFill" Opacity="0.12"/>
+                </Grid.Background>
+                <Border Background="#260D1117"/>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="SidebarColumn" Width="220" MinWidth="60" MaxWidth="220"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Column 0: Sidebar Panel -->
+                <Grid Grid.Column="0" Background="{StaticResource SidebarBgBrush}">
+                    <Grid.RowDefinitions>
+                        <!-- Sidebar Header (DockPanel) -->
+                        <RowDefinition Height="50" />
+                        <!-- Sidebar Navigation Items -->
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Sidebar Header Layout -->
+                    <DockPanel Grid.Row="0"
+                               LastChildFill="True" 
+                               Height="50" 
+                               Background="#161B22"
+                               Margin="0,0,0,8">
+
+                        <!-- Hamburger Toggle Button — docked LEFT -->
+                        <ToggleButton x:Name="SidebarToggle"
+                                      DockPanel.Dock="Left"
+                                      Width="44"
+                                      Height="44"
+                                      VerticalAlignment="Center"
+                                      Margin="6,0,0,0"
+                                      Click="SidebarToggle_Click">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border Background="Transparent" BorderThickness="0">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                            <fa:IconImage Icon="Bars"
+                                          Width="18" Height="18"
+                                          Foreground="#00FFC8"/>
+                        </ToggleButton>
+
+                        <!-- App Name — fills remaining space, centered -->
+                        <TextBlock x:Name="AppNameText"
+                                   Text="NEST-FINDER"
+                                   Foreground="#00FFC8"
+                                   FontSize="17"
+                                   FontWeight="Bold"
+                                   FontFamily="Segoe UI"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   TextTrimming="None"
+                                   Margin="0,0,8,0"/>
+                    </DockPanel>
+
+                    <!-- Sidebar Navigation Menu -->
+                    <mah:HamburgerMenu Grid.Row="1"
+                                       x:Name="NavigationMenu"
+                                       PaneBackground="{StaticResource SidebarBgBrush}"
+                                       OpenPaneLength="220"
+                                       CompactPaneLength="60"
+                                       IsPaneOpen="True"
+                                       DisplayMode="CompactInline"
+                                       HamburgerWidth="60"
+                                       HamburgerHeight="48"
+                                       HamburgerVisibility="Collapsed"
+                                       ItemClick="NavigationMenu_ItemClick"
+                                       OptionsItemClick="NavigationMenu_OptionsItemClick">
+
+                        <!-- Regular Sidebar Navigation Items -->
+                        <mah:HamburgerMenu.ItemsSource>
+                            <mah:HamburgerMenuItemCollection>
+                                <mah:HamburgerMenuGlyphItem Label="Dashboard" Glyph="Home" />
+                                <mah:HamburgerMenuGlyphItem Label="Properties" Glyph="Building" />
+                                <mah:HamburgerMenuGlyphItem x:Name="MenuCustomers" Label="Customers" Glyph="Users" />
+                                <mah:HamburgerMenuGlyphItem Label="Transactions" Glyph="ExchangeAlt" />
+                            </mah:HamburgerMenuItemCollection>
+                        </mah:HamburgerMenu.ItemsSource>
+
+                        <!-- Bottom Pinned Navigation Items -->
+                        <mah:HamburgerMenu.OptionsItemsSource>
+                            <mah:HamburgerMenuItemCollection>
+                                <mah:HamburgerMenuGlyphItem Label="Settings" Glyph="Cog" />
+                                <mah:HamburgerMenuGlyphItem Label="Logout" Glyph="SignOutAlt" />
+                            </mah:HamburgerMenuItemCollection>
+                        </mah:HamburgerMenu.OptionsItemsSource>
+
+                        <!-- Custom Selected Highlight Template for Main Menu -->
+                        <mah:HamburgerMenu.ItemTemplate>
+                            <DataTemplate DataType="{x:Type mah:HamburgerMenuGlyphItem}">
+                                <Grid Height="48" Background="Transparent">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Left border highlight -->
+                                    <Border x:Name="SelectedBorder" Width="3" Background="{StaticResource AccentTealBrush}" HorizontalAlignment="Left" Visibility="Collapsed" Grid.ColumnSpan="2"/>
+                                    
+                                    <!-- Icon -->
+                                    <fa:IconBlock Icon="{Binding Glyph}" 
+                                                  Foreground="{StaticResource TextPrimaryBrush}" 
+                                                  FontSize="18" 
+                                                  HorizontalAlignment="Center" 
+                                                  VerticalAlignment="Center" 
+                                                  Grid.Column="0"
+                                                  x:Name="IconBlock"/>
+                                                  
+                                    <!-- Label -->
+                                    <TextBlock Text="{Binding Label}" 
+                                               Foreground="{StaticResource TextPrimaryBrush}" 
+                                               FontSize="13" 
+                                               FontFamily="{StaticResource SegoeUIFont}"
+                                               VerticalAlignment="Center" 
+                                               Grid.Column="1" 
+                                               Margin="10,0,0,0"
+                                               x:Name="LabelBlock"/>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
+                                        <Setter TargetName="SelectedBorder" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="IconBlock" Property="Foreground" Value="{StaticResource AccentTealBrush}"/>
+                                        <Setter TargetName="LabelBlock" Property="Foreground" Value="{StaticResource AccentTealBrush}"/>
+                                        <Setter TargetName="LabelBlock" Property="FontWeight" Value="SemiBold"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </mah:HamburgerMenu.ItemTemplate>
+
+                        <!-- Custom Template for Options Items -->
+                        <mah:HamburgerMenu.OptionsItemTemplate>
+                            <DataTemplate DataType="{x:Type mah:HamburgerMenuGlyphItem}">
+                                <Grid Height="48" Background="Transparent">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Left border highlight -->
+                                    <Border x:Name="SelectedBorder" Width="3" Background="{StaticResource AccentTealBrush}" HorizontalAlignment="Left" Visibility="Collapsed" Grid.ColumnSpan="2"/>
+                                    
+                                    <!-- Icon -->
+                                    <fa:IconBlock Icon="{Binding Glyph}" 
+                                                  Foreground="{StaticResource TextPrimaryBrush}" 
+                                                  FontSize="18" 
+                                                  HorizontalAlignment="Center" 
+                                                  VerticalAlignment="Center" 
+                                                  Grid.Column="0"
+                                                  x:Name="IconBlock"/>
+                                                  
+                                    <!-- Label -->
+                                    <TextBlock Text="{Binding Label}" 
+                                               Foreground="{StaticResource TextPrimaryBrush}" 
+                                               FontSize="13" 
+                                               FontFamily="{StaticResource SegoeUIFont}"
+                                               VerticalAlignment="Center" 
+                                               Grid.Column="1" 
+                                               Margin="10,0,0,0"
+                                               x:Name="LabelBlock"/>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <!-- Logout Red Icon Trigger -->
+                                    <DataTrigger Binding="{Binding Label}" Value="Logout">
+                                        <Setter TargetName="IconBlock" Property="Foreground" Value="{StaticResource DangerRedBrush}"/>
+                                    </DataTrigger>
+                                    <!-- Selection States -->
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
+                                        <Setter TargetName="SelectedBorder" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="LabelBlock" Property="FontWeight" Value="SemiBold"/>
+                                        <!-- Avoid changing Logout Icon to Teal when selected, but change settings -->
+                                    </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True" />
+                                            <Condition Binding="{Binding Label}" Value="Settings" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="IconBlock" Property="Foreground" Value="{StaticResource AccentTealBrush}"/>
+                                        <Setter TargetName="LabelBlock" Property="Foreground" Value="{StaticResource AccentTealBrush}"/>
+                                    </MultiDataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </mah:HamburgerMenu.OptionsItemTemplate>
+                    </mah:HamburgerMenu>
+                </Grid>
+
+                <!-- Column 1: Main Content Container -->
+                <Grid Grid.Column="1" Background="Transparent" Margin="0">
+                    <ContentControl Content="{Binding RelativeSource={RelativeSource AncestorType=mah:MetroWindow}, Path=CurrentView}" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</mah:MetroWindow>

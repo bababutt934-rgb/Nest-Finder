@@ -1,0 +1,265 @@
+<UserControl x:Class="NestFinder.Views.PropertiesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:icon="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1000"
+             Background="{StaticResource MainBgBrush}">
+
+    <Grid Margin="30,30,20,20">
+        <Grid.RowDefinitions>
+            <!-- Title Bar -->
+            <RowDefinition Height="Auto" />
+            <!-- Search & Filters -->
+            <RowDefinition Height="Auto" />
+            <!-- Grid -->
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock x:Name="TxtTitle" 
+                           Text="BROWSE PROPERTIES" 
+                           Foreground="{StaticResource TextPrimaryBrush}" 
+                           FontFamily="{StaticResource SegoeUIFont}" 
+                           FontSize="28" 
+                           FontWeight="Bold"/>
+                <TextBlock Text="Find available residential and commercial spaces." 
+                           Foreground="{StaticResource TextMutedBrush}" 
+                           FontFamily="{StaticResource SegoeUIFont}" 
+                           FontSize="13" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!-- Add Property Button (Admin Only) -->
+            <Button x:Name="BtnAddProperty" 
+                    Grid.Column="1" 
+                    Style="{StaticResource PrimaryButtonStyle}" 
+                    Content="+ Add Property" 
+                    Width="140" 
+                    Height="38" 
+                    VerticalAlignment="Center"
+                    Click="BtnAddProperty_Click"
+                    Visibility="Collapsed"/>
+        </Grid>
+
+        <!-- Search & Filter Controls -->
+        <Border Grid.Row="1" Style="{StaticResource CardStyle}" Padding="15" Margin="0,0,0,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2.5*" />
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Search box -->
+                <TextBox x:Name="TxtSearch" 
+                         Grid.Column="0" 
+                         Style="{StaticResource DarkTextBoxStyle}" 
+                         Height="36" 
+                         Tag="Search by title or city..." 
+                         GotFocus="TxtSearch_GotFocus" 
+                         LostFocus="TxtSearch_LostFocus" 
+                         Foreground="{StaticResource TextPrimaryBrush}"/>
+
+                <!-- Type filter -->
+                <ComboBox x:Name="CmbType" 
+                          Grid.Column="2" 
+                          Height="36" 
+                          Background="{StaticResource MainBgBrush}" 
+                          BorderBrush="{StaticResource BorderBrush}" 
+                          Foreground="White"
+                          VerticalContentAlignment="Center">
+                    <ComboBoxItem Content="All Types" IsSelected="True" />
+                    <ComboBoxItem Content="Residential" />
+                    <ComboBoxItem Content="Commercial" />
+                </ComboBox>
+
+                <!-- Status filter -->
+                <ComboBox x:Name="CmbStatus" 
+                          Grid.Column="4" 
+                          Height="36" 
+                          Background="{StaticResource MainBgBrush}" 
+                          BorderBrush="{StaticResource BorderBrush}" 
+                          Foreground="White"
+                          VerticalContentAlignment="Center">
+                    <ComboBoxItem Content="All Status" IsSelected="True" />
+                    <ComboBoxItem Content="Available" />
+                    <ComboBoxItem Content="Sold" />
+                    <ComboBoxItem Content="Rented" />
+                </ComboBox>
+
+                <!-- Search Button -->
+                <Button Grid.Column="6" 
+                        Style="{StaticResource PrimaryButtonStyle}" 
+                        Content="Search" 
+                        Width="100" 
+                        Height="36" 
+                        Click="BtnSearch_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Properties Grid -->
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="15">
+            <DataGrid x:Name="PropertiesGrid"
+                      AutoGenerateColumns="False"
+                      Background="Transparent"
+                      RowBackground="#1C2333"
+                      AlternatingRowBackground="#161B22"
+                      BorderThickness="0"
+                      GridLinesVisibility="None"
+                      HeadersVisibility="Column"
+                      IsReadOnly="True"
+                      RowHeaderWidth="0"
+                      SelectionMode="Single"
+                      RowHeight="46"
+                      CanUserAddRows="False">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#0D1117" />
+                        <Setter Property="Foreground" Value="#8B949E" />
+                        <Setter Property="FontSize" Value="11" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="Padding" Value="10,8" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2D3748" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#6C5CE7" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                    <DataGridTextColumn Header="TITLE" Binding="{Binding Title}" Width="2*" />
+                    <DataGridTextColumn Header="CITY" Binding="{Binding City}" Width="1*" />
+                    <DataGridTextColumn Header="TYPE" Binding="{Binding Type}" Width="1*" />
+                    <DataGridTextColumn Header="PRICE" Binding="{Binding Price, StringFormat=C0}" Width="1.2*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{StaticResource AccentTealBrush}" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Margin" Value="10,0"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="BEDS" Binding="{Binding Bedrooms}" Width="60" />
+                    
+                    <DataGridTemplateColumn Header="STATUS" Width="1.2*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="4" Padding="8,3" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="Available">
+                                                    <Setter Property="Background" Value="#2000FFC8" />
+                                                    <Setter Property="BorderBrush" Value="#00FFC8" />
+                                                    <Setter Property="BorderThickness" Value="1" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Rented">
+                                                    <Setter Property="Background" Value="#20F0A500" />
+                                                    <Setter Property="BorderBrush" Value="#F0A500" />
+                                                    <Setter Property="BorderThickness" Value="1" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Sold">
+                                                    <Setter Property="Background" Value="#20FF4C4C" />
+                                                    <Setter Property="BorderBrush" Value="#FF4C4C" />
+                                                    <Setter Property="BorderThickness" Value="1" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding Status}" FontSize="11" FontWeight="Bold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#FFFFFF" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Available">
+                                                        <Setter Property="Foreground" Value="#00FFC8" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Rented">
+                                                        <Setter Property="Foreground" Value="#F0A500" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Sold">
+                                                        <Setter Property="Foreground" Value="#FF4C4C" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="ACTIONS" Width="Auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- Customer Action -->
+                                    <Button Content="View Details" 
+                                            Style="{StaticResource PrimaryButtonStyle}" 
+                                            Height="28" Padding="10,2"
+                                            Click="BtnViewDetails_Click"
+                                            Tag="{Binding}"
+                                            x:Name="BtnCustView"/>
+                                            
+                                    <!-- Admin Actions -->
+                                    <Button Content="Edit" 
+                                            Style="{StaticResource PrimaryButtonStyle}" 
+                                            Height="28" Padding="10,2" Margin="0,0,8,0"
+                                            Click="BtnEditProperty_Click"
+                                            Tag="{Binding}"
+                                            x:Name="BtnAdminEdit"
+                                            Visibility="Collapsed"/>
+                                            
+                                    <Button Content="Delete" 
+                                            Style="{StaticResource DangerButtonStyle}" 
+                                            Height="28" Padding="10,2"
+                                            Click="BtnDeleteProperty_Click"
+                                            Tag="{Binding}"
+                                            x:Name="BtnAdminDelete"
+                                            Visibility="Collapsed"/>
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <!-- Show/Hide buttons depending on User Role -->
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=IsAdminRole}" Value="True">
+                                        <Setter TargetName="BtnCustView" Property="Visibility" Value="Collapsed"/>
+                                        <Setter TargetName="BtnAdminEdit" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="BtnAdminDelete" Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Grid>
+</UserControl>

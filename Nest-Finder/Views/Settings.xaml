@@ -1,0 +1,161 @@
+<UserControl x:Class="NestFinder.Views.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:icon="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+             mc:Ignorable="d" 
+             d:DesignHeight="750" d:DesignWidth="1000">
+
+    <Grid Margin="30,30,20,20">
+        <Grid.RowDefinitions>
+            <!-- Header -->
+            <RowDefinition Height="Auto" />
+            <!-- Content -->
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Page Title -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,24">
+            <TextBlock Text="SETTINGS" 
+                       Foreground="{StaticResource TextPrimaryBrush}" 
+                       FontFamily="{StaticResource SegoeUIFont}" 
+                       FontSize="28" 
+                       FontWeight="Bold"/>
+            <TextBlock Text="Manage your personal profile and security settings." 
+                       Foreground="{StaticResource TextMutedBrush}" 
+                       FontFamily="{StaticResource SegoeUIFont}" 
+                       FontSize="13" 
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- Cards Scrollable Stack -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="0,0,0,20">
+
+                <!-- 4b. User Profile Card -->
+                <Border Style="{StaticResource CardStyle}" Padding="24">
+                    <StackPanel>
+                        <TextBlock Text="User Profile" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold" 
+                                   Margin="0,0,0,20"/>
+
+                        <!-- Alert message inside profile -->
+                        <Border x:Name="ProfileAlertBorder" CornerRadius="6" Padding="12" Margin="0,0,0,16" Visibility="Collapsed">
+                            <TextBlock x:Name="TxtProfileAlert" Text="Profile changes saved successfully." Foreground="{StaticResource AccentTealBrush}" FontSize="12"/>
+                        </Border>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Profile Avatar -->
+                            <Border Grid.Column="0" 
+                                    Width="60" Height="60" 
+                                    CornerRadius="30" 
+                                    Background="#6C5CE7" 
+                                    VerticalAlignment="Top" 
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,24,0">
+                                <TextBlock x:Name="TxtAvatarInitials" 
+                                           Text="SA" 
+                                           Foreground="White" 
+                                           FontFamily="{StaticResource SegoeUIFont}" 
+                                           FontSize="20" 
+                                           FontWeight="Bold" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+
+                            <!-- Fields Form -->
+                            <StackPanel Grid.Column="1">
+                                <!-- Grid for Inputs -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Full Name -->
+                                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,16">
+                                        <TextBlock Text="FULL NAME" Foreground="{StaticResource TextMutedBrush}" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                                        <TextBox x:Name="TxtFullName" Style="{StaticResource DarkTextBoxStyle}" Height="38"/>
+                                    </StackPanel>
+
+                                    <!-- Email (read-only) -->
+                                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="12,0,0,16">
+                                        <TextBlock Text="EMAIL (READ-ONLY)" Foreground="{StaticResource TextMutedBrush}" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                                        <TextBox x:Name="TxtEmail" Style="{StaticResource DarkTextBoxStyle}" Height="38" IsReadOnly="True" Opacity="0.6"/>
+                                    </StackPanel>
+
+                                    <!-- Role (read-only, badge style) -->
+                                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,12,16">
+                                        <TextBlock Text="ROLE" Foreground="{StaticResource TextMutedBrush}" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                                        <Border Background="#6C5CE7" CornerRadius="4" Padding="12,8" HorizontalAlignment="Left">
+                                            <TextBlock x:Name="TxtRoleBadge" Text="System Admin" Foreground="White" FontSize="13" FontWeight="Bold"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <!-- Phone (Editable for repository update) -->
+                                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="12,0,0,16">
+                                        <TextBlock Text="PHONE" Foreground="{StaticResource TextMutedBrush}" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                                        <TextBox x:Name="TxtPhone" Style="{StaticResource DarkTextBoxStyle}" Height="38"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Change Password Expandable Section -->
+                                <Expander x:Name="ExpanderPassword" 
+                                          Header="Security Settings (Change Password)" 
+                                          Foreground="{StaticResource TextPrimaryBrush}" 
+                                          BorderThickness="0" 
+                                          Background="Transparent" 
+                                          Margin="0,8,0,16" 
+                                          HorizontalAlignment="Left" 
+                                          Width="400">
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,12,0,0" Margin="0,5,0,0">
+                                        <StackPanel>
+                                            <TextBlock Text="CURRENT PASSWORD" Foreground="{StaticResource TextMutedBrush}" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                                            <PasswordBox x:Name="TxtCurrentPassword" Style="{StaticResource DarkPasswordBoxStyle}" Height="38" Margin="0,0,0,12"/>
+
+                                            <TextBlock Text="NEW PASSWORD" Foreground="{StaticResource TextMutedBrush}" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                                            <PasswordBox x:Name="TxtNewPassword" Style="{StaticResource DarkPasswordBoxStyle}" Height="38" Margin="0,0,0,12"/>
+
+                                            <TextBlock Text="CONFIRM NEW PASSWORD" Foreground="{StaticResource TextMutedBrush}" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                                            <PasswordBox x:Name="TxtConfirmNewPassword" Style="{StaticResource DarkPasswordBoxStyle}" Height="38"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Expander>
+
+                                <!-- Button Panel -->
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <!-- Save Changes Button -->
+                                    <Button Style="{StaticResource PrimaryButtonStyle}" 
+                                            Content="Save Changes" 
+                                            Click="BtnSaveProfile_Click" 
+                                            Width="140" Height="36"/>
+
+                                    <!-- Change Password Button (just toggles password expander) -->
+                                    <Button Style="{StaticResource SecondaryButtonStyle}" 
+                                            Content="Change Password" 
+                                            Click="BtnTogglePassword_Click" 
+                                            Width="140" Height="36" 
+                                            Margin="15,0,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

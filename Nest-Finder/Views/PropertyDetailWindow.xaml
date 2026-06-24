@@ -1,0 +1,650 @@
+<mah:MetroWindow x:Class="NestFinder.Views.PropertyDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+        Title="Property Details"
+        Width="860"
+        Height="640"
+        MinWidth="800"
+        MinHeight="580"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Background="#0D1117"
+        ShowTitleBar="True"
+        TitleForeground="White"
+        GlowBrush="#00FFC8"
+        BorderThickness="1"
+        BorderBrush="#2D3748"
+        Foreground="{StaticResource TextPrimaryBrush}">
+
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/assets/customer_bg.jpg" Stretch="UniformToFill" Opacity="0.12"/>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="340"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Background="#260D1117" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+
+        <!-- LEFT PANEL (Column 0, Row 0) — Image + Quick Info -->
+        <Border Grid.Column="0" Grid.Row="0"
+                Background="#161B22"
+                BorderBrush="#2D3748"
+                BorderThickness="0,0,1,0">
+            <StackPanel Margin="0,0,0,0">
+
+                <!-- Property Image (top, full width of left panel) -->
+                <Border Height="220"
+                        Background="#1C2333"
+                        CornerRadius="0">
+                    <Grid>
+                        <!-- Actual image loaded from DB ImagePath -->
+                        <Image x:Name="MainPropertyImage"
+                               Stretch="UniformToFill"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
+                        <!-- Fallback placeholder shown when no image -->
+                        <StackPanel x:Name="ImagePlaceholder"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Visibility="Visible">
+                            <fa:IconImage Icon="Building"
+                                          Width="48" Height="48"
+                                          Foreground="#2D3748"
+                                          HorizontalAlignment="Center"/>
+                            <TextBlock Text="No Image Available"
+                                       FontSize="11"
+                                       Foreground="#4A5568"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+
+                        <!-- Status badge overlay — top right of image -->
+                        <Border x:Name="StatusOverlay"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Margin="0,10,10,0"
+                                CornerRadius="4"
+                                Padding="8,3">
+                            <TextBlock x:Name="StatusOverlayText"
+                                       FontSize="11"
+                                       FontWeight="Bold"/>
+                        </Border>
+
+                        <!-- Image Navigation Controls overlay -->
+                        <Grid x:Name="ImageNavigationGrid" Visibility="Collapsed">
+                            <!-- Left Arrow Button -->
+                            <Button x:Name="BtnPrevImage"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Width="30" Height="30"
+                                    Margin="10,0,0,0"
+                                    Style="{StaticResource TitlebarButtonStyle}"
+                                    Background="#B00D1117"
+                                    Click="BtnPrevImage_Click">
+                                <fa:IconImage Icon="ChevronLeft" Width="10" Height="10" Foreground="White"/>
+                            </Button>
+
+                            <!-- Right Arrow Button -->
+                            <Button x:Name="BtnNextImage"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Width="30" Height="30"
+                                    Margin="0,0,10,0"
+                                    Style="{StaticResource TitlebarButtonStyle}"
+                                    Background="#B00D1117"
+                                    Click="BtnNextImage_Click">
+                                <fa:IconImage Icon="ChevronRight" Width="10" Height="10" Foreground="White"/>
+                            </Button>
+
+                            <!-- Index Indicator Badge -->
+                            <Border HorizontalAlignment="Center"
+                                    VerticalAlignment="Bottom"
+                                    Margin="0,0,0,10"
+                                    Background="#B00D1117"
+                                    CornerRadius="10"
+                                    Padding="8,3">
+                                <TextBlock x:Name="TxtImageIndex"
+                                           Text="1 / 1"
+                                           Foreground="White"
+                                           FontSize="10"
+                                           FontWeight="SemiBold"/>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Quick Stats Grid below image -->
+                <StackPanel Margin="20,16,20,0">
+
+                    <!-- Price -->
+                    <TextBlock x:Name="PriceText"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="#00FFC8"
+                               Margin="0,0,0,4"/>
+
+                    <!-- Property Title -->
+                    <TextBlock x:Name="TitleText"
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="White"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,14"/>
+
+                    <!-- Separator -->
+                    <Border Height="1" Background="#2D3748" Margin="0,0,0,14"/>
+
+                    <!-- Stats: 2x2 grid of icon+value pairs -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- City -->
+                        <StackPanel Grid.Row="0" Grid.Column="0" 
+                                    Orientation="Horizontal">
+                            <fa:IconImage Icon="LocationDot"
+                                          Width="13" Height="13"
+                                          Foreground="#8B949E"
+                                          Margin="0,0,6,0"
+                                          VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock Text="CITY"
+                                           FontSize="9"
+                                           Foreground="#4A5568"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="CityText"
+                                           FontSize="12"
+                                           Foreground="White"
+                                           FontWeight="Medium"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Type -->
+                        <StackPanel Grid.Row="0" Grid.Column="1"
+                                    Orientation="Horizontal">
+                            <fa:IconImage Icon="Tag"
+                                          Width="13" Height="13"
+                                          Foreground="#8B949E"
+                                          Margin="0,0,6,0"
+                                          VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock Text="TYPE"
+                                           FontSize="9"
+                                           Foreground="#4A5568"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TypeText"
+                                           FontSize="12"
+                                           Foreground="White"
+                                           FontWeight="Medium"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Bedrooms -->
+                        <StackPanel Grid.Row="2" Grid.Column="0"
+                                    Orientation="Horizontal">
+                            <fa:IconImage Icon="Bed"
+                                          Width="13" Height="13"
+                                          Foreground="#8B949E"
+                                          Margin="0,0,6,0"
+                                          VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock Text="BEDROOMS"
+                                           FontSize="9"
+                                           Foreground="#4A5568"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="BedsText"
+                                           FontSize="12"
+                                           Foreground="White"
+                                           FontWeight="Medium"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Bathrooms -->
+                        <StackPanel Grid.Row="2" Grid.Column="1"
+                                    Orientation="Horizontal">
+                            <fa:IconImage Icon="Shower"
+                                          Width="13" Height="13"
+                                          Foreground="#8B949E"
+                                          Margin="0,0,6,0"
+                                          VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock Text="BATHROOMS"
+                                           FontSize="9"
+                                           Foreground="#4A5568"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="BathsText"
+                                           FontSize="12"
+                                           Foreground="White"
+                                           FontWeight="Medium"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Area -->
+                        <StackPanel Grid.Row="4" Grid.Column="0"
+                                    Orientation="Horizontal">
+                            <fa:IconImage Icon="Expand"
+                                          Width="13" Height="13"
+                                          Foreground="#8B949E"
+                                          Margin="0,0,6,0"
+                                          VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock Text="AREA (SQFT)"
+                                           FontSize="9"
+                                           Foreground="#4A5568"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="AreaText"
+                                           FontSize="12"
+                                           Foreground="White"
+                                           FontWeight="Medium"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Listed On -->
+                        <StackPanel Grid.Row="4" Grid.Column="1"
+                                    Orientation="Horizontal">
+                            <fa:IconImage Icon="Calendar"
+                                          Width="13" Height="13"
+                                          Foreground="#8B949E"
+                                          Margin="0,0,6,0"
+                                          VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock Text="LISTED ON"
+                                           FontSize="9"
+                                           Foreground="#4A5568"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="ListedDateText"
+                                           FontSize="12"
+                                           Foreground="White"
+                                           FontWeight="Medium"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Average Rating -->
+                        <StackPanel Grid.Row="6" Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Orientation="Horizontal"
+                                    Margin="0,4,0,0">
+                            <fa:IconImage Icon="Star"
+                                          Width="13" Height="13"
+                                          Foreground="#F0A500"
+                                          Margin="0,0,6,0"
+                                          VerticalAlignment="Center"/>
+                            <TextBlock x:Name="RatingText"
+                                       FontSize="12"
+                                       Foreground="#F0A500"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text=" / 5.0"
+                                       FontSize="11"
+                                       Foreground="#4A5568"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- RIGHT PANEL (Column 1, Row 0) — Description + Reviews -->
+        <ScrollViewer Grid.Column="1" Grid.Row="0"
+                      VerticalScrollBarVisibility="Auto"
+                      Padding="0,0,4,0">
+            <StackPanel Margin="24,20,24,16">
+
+                <!-- DESCRIPTION SECTION -->
+                <StackPanel Margin="0,0,0,20">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Border Width="3" Height="16"
+                                Background="#00FFC8"
+                                CornerRadius="2"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"/>
+                        <TextBlock Text="Description"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"/>
+                    </StackPanel>
+
+                    <Border Background="#1C2333"
+                            CornerRadius="8"
+                            Padding="14,12"
+                            BorderBrush="#2D3748"
+                            BorderThickness="1">
+                        <TextBlock x:Name="DescriptionText"
+                                   FontSize="13"
+                                   Foreground="#CBD5E0"
+                                   TextWrapping="Wrap"
+                                   LineHeight="20"/>
+                    </Border>
+                </StackPanel>
+                <!-- WEB SERVICES / INFO SECTION -->
+                <StackPanel Margin="0,0,0,20">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Border Width="3" Height="16"
+                                Background="#00FFC8"
+                                CornerRadius="2"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"/>
+                        <TextBlock Text="Local Insights &amp; Valuation"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"/>
+                    </StackPanel>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Weather Card -->
+                        <Border Grid.Column="0"
+                                Background="#1C2333"
+                                CornerRadius="8"
+                                Padding="14,12"
+                                BorderBrush="#2D3748"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                    <fa:IconImage Icon="CloudSun" Width="14" Height="14" Foreground="#00FFC8" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Local Weather" FontSize="11" FontWeight="Bold" Foreground="#8B949E" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                
+                                <Grid Height="50">
+                                    <!-- Loading State -->
+                                    <StackPanel x:Name="WeatherLoadingPanel" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="Loading Weather..." FontSize="12" Foreground="#8B949E" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    
+                                    <!-- Error State -->
+                                    <StackPanel x:Name="WeatherErrorPanel" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="Weather Unavailable" FontSize="12" Foreground="#FF4C4C" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    
+                                    <!-- Data State -->
+                                    <Grid x:Name="WeatherInfoPanel" Visibility="Collapsed">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <fa:IconImage x:Name="WeatherIcon" Icon="Sun" Width="32" Height="32" Foreground="#00FFC8" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Column="0"/>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock x:Name="WeatherTempText" Text="0°C" FontSize="16" FontWeight="Bold" Foreground="White"/>
+                                            <TextBlock x:Name="WeatherDescText" Text="N/A" FontSize="11" Foreground="#8B949E"/>
+                                            <TextBlock x:Name="WeatherDetailText" Text="Feels like: 0°C • Humidity: 0%" FontSize="9" Foreground="#4A5568" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Currency Conversion Card -->
+                        <Border Grid.Column="2"
+                                Background="#1C2333"
+                                CornerRadius="8"
+                                Padding="14,12"
+                                BorderBrush="#2D3748"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                    <fa:IconImage Icon="Coins" Width="14" Height="14" Foreground="#F0A500" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="PKR Valuation" FontSize="11" FontWeight="Bold" Foreground="#8B949E" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <Grid Height="50">
+                                    <!-- Loading State -->
+                                    <StackPanel x:Name="ExchangeLoadingPanel" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="Converting Price..." FontSize="12" Foreground="#8B949E" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <!-- Error State -->
+                                    <StackPanel x:Name="ExchangeErrorPanel" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="Conversion Failed" FontSize="12" Foreground="#FF4C4C" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <!-- Data State -->
+                                    <StackPanel x:Name="ExchangeInfoPanel" Visibility="Collapsed" VerticalAlignment="Center">
+                                        <TextBlock x:Name="PkrPriceText" Text="PKR 0" FontSize="16" FontWeight="Bold" Foreground="#F0A500"/>
+                                        <TextBlock x:Name="ExchangeRateText" Text="1 USD = 0.00 PKR" FontSize="11" Foreground="#8B949E"/>
+                                        <TextBlock Text="Rates by ExchangeRate-API" FontSize="9" Foreground="#4A5568" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+
+                <!-- REVIEWS SECTION -->
+                <StackPanel>
+
+                    <!-- Section header row -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <Border Width="3" Height="16"
+                                    Background="#6C5CE7"
+                                    CornerRadius="2"
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"/>
+                            <TextBlock Text="Reviews"
+                                       FontSize="13"
+                                       FontWeight="SemiBold"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock x:Name="ReviewCountText"
+                                       FontSize="11"
+                                       Foreground="#4A5568"
+                                       VerticalAlignment="Center"
+                                       Margin="8,0,0,0"/>
+                        </StackPanel>
+
+                        <!-- Leave Review button -->
+                        <Button Grid.Column="1"
+                                x:Name="LeaveReviewBtn"
+                                Content="+ Leave Review"
+                                Style="{StaticResource OutlineButton}"
+                                Height="30"
+                                FontSize="11"
+                                Padding="10,0"
+                                Visibility="Collapsed"
+                                Click="LeaveReview_Click"/>
+                    </Grid>
+
+                    <!-- Reviews list (ItemsControl) -->
+                    <ItemsControl x:Name="ReviewsList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#1C2333"
+                                        CornerRadius="8"
+                                        Padding="14,12"
+                                        Margin="0,0,0,8"
+                                        BorderBrush="#2D3748"
+                                        BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Avatar circle with initials -->
+                                        <Border Grid.Column="0"
+                                                Width="36" Height="36"
+                                                CornerRadius="18"
+                                                Background="#6C5CE7"
+                                                Margin="0,0,12,0"
+                                                VerticalAlignment="Top">
+                                            <TextBlock Text="{Binding InitialsText}"
+                                                       FontSize="13"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1">
+                                            <!-- Reviewer name + date row -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding ReviewerName}"
+                                                           FontSize="13"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="White"/>
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding ReviewDateFormatted}"
+                                                           FontSize="10"
+                                                           Foreground="#4A5568"
+                                                           VerticalAlignment="Center"/>
+                                            </Grid>
+
+                                            <!-- Star rating row -->
+                                            <ItemsControl ItemsSource="{Binding StarColors}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,3,0,6"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <fa:IconImage Icon="Star" Width="12" Height="12" Foreground="{Binding}" Margin="0,0,2,0"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                            <!-- Review text -->
+                                            <TextBlock Text="{Binding ReviewText}"
+                                                       FontSize="12"
+                                                       Foreground="#8B949E"
+                                                       TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Empty state when no reviews -->
+                    <Border x:Name="NoReviewsPanel"
+                            Background="#1C2333"
+                            CornerRadius="8"
+                            Padding="20"
+                            BorderBrush="#2D3748"
+                            BorderThickness="1"
+                            Visibility="Visible">
+                        <StackPanel HorizontalAlignment="Center">
+                            <fa:IconImage Icon="CommentSlash"
+                                          Width="28" Height="28"
+                                          Foreground="#2D3748"
+                                          HorizontalAlignment="Center"
+                                          Margin="0,0,0,8"/>
+                            <TextBlock Text="No reviews yet"
+                                       FontSize="13"
+                                       Foreground="#4A5568"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Be the first to leave a review"
+                                       FontSize="11"
+                                       Foreground="#2D3748"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- BOTTOM ACTION BAR (Grid Row 1, spans both columns) -->
+        <Border Grid.Row="1" Grid.ColumnSpan="2"
+                Background="#161B22"
+                BorderBrush="#2D3748"
+                BorderThickness="0,1,0,0"
+                Padding="24,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Status message (left) -->
+                <TextBlock x:Name="StatusMessageText"
+                           Grid.Column="0"
+                           FontSize="12"
+                           Foreground="#8B949E"
+                           VerticalAlignment="Center"/>
+
+                <!-- Add to Favorites button (always visible) -->
+                <Button Grid.Column="1"
+                        x:Name="FavoriteBtn"
+                        Style="{StaticResource OutlineButton}"
+                        Height="38"
+                        Width="150"
+                        Click="ToggleFavorite_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconImage x:Name="FavoriteIcon"
+                                      Icon="Heart"
+                                      Width="14" Height="14"
+                                      Foreground="#00FFC8"
+                                      Margin="0,0,6,0"
+                                      VerticalAlignment="Center"/>
+                        <TextBlock x:Name="FavoriteBtnText"
+                                   Text="Add Favorite"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Rent button: visible only if Status=Available -->
+                <Button Grid.Column="3"
+                        x:Name="RentBtn"
+                        Content="Rent Property"
+                        Style="{StaticResource AmberButtonStyle}"
+                        Height="38"
+                        Width="130"
+                        Visibility="Collapsed"
+                        Click="RentProperty_Click"/>
+
+                <!-- Buy button: visible only if Status=Available -->
+                <Button Grid.Column="5"
+                        x:Name="BuyBtn"
+                        Content="Buy Property"
+                        Style="{StaticResource PrimaryButton}"
+                        Height="38"
+                        Width="130"
+                        Visibility="Collapsed"
+                        Click="BuyProperty_Click"/>
+
+            </Grid>
+        </Border>
+    </Grid>
+</mah:MetroWindow>

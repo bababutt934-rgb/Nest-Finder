@@ -1,0 +1,252 @@
+<mah:MetroWindow x:Class="NestFinder.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:icon="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+        Title="NEST-FINDER - Authentication" 
+        Height="600" Width="900"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="{StaticResource MainBgBrush}"
+        Foreground="{StaticResource TextPrimaryBrush}"
+        BorderThickness="0"
+        GlowBrush="{StaticResource AccentTealBrush}"
+        ShowTitleBar="False"
+        WindowStyle="None"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d">
+
+    <Grid>
+        <!-- Background Image layer covering the whole window -->
+        <Grid>
+            <Grid.Background>
+                <ImageBrush ImageSource="/assets/login_bg.jpg" Stretch="UniformToFill" Opacity="0.25"/>
+            </Grid.Background>
+        </Grid>
+        
+        <!-- Radial Vignette Overlay to guide focus to the center cards -->
+        <Grid>
+            <Grid.Background>
+                <RadialGradientBrush Center="0.5,0.5" RadiusX="0.85" RadiusY="0.85">
+                    <GradientStop Color="#00000000" Offset="0"/>
+                    <GradientStop Color="#E505070A" Offset="1"/>
+                </RadialGradientBrush>
+            </Grid.Background>
+        </Grid>
+
+        <!-- Split Column Layout Overlay -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="400" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Column: Interactive Form Panel -->
+            <Grid Grid.Column="0">
+                <!-- Elevated Floating Form Card Container (Semi-Transparent Acrylic) -->
+                <Border x:Name="FormCardContainer" 
+                        Width="430" 
+                        Padding="32" 
+                        CornerRadius="16" 
+                        Background="#EE111622" 
+                        BorderThickness="0" 
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Center"
+                        Effect="{StaticResource CardShadow}">
+                    
+                    <Grid>
+                        <!-- Login View -->
+                        <Grid x:Name="LoginGrid" Visibility="Visible">
+                            <StackPanel>
+                                <TextBlock Text="Welcome Back" 
+                                           Foreground="{StaticResource TextPrimaryBrush}" 
+                                           FontFamily="{StaticResource SegoeUIFont}" 
+                                           FontSize="26" 
+                                           FontWeight="Bold"/>
+                                <TextBlock Text="Sign in to manage your real estate network." 
+                                           Foreground="{StaticResource TextMutedBrush}" 
+                                           FontFamily="{StaticResource SegoeUIFont}" 
+                                           FontSize="13" 
+                                           Margin="0,4,0,24"/>
+
+                                <!-- Error Alert -->
+                                <Border x:Name="LoginErrorBorder" Background="#22FF4C4C" BorderBrush="{StaticResource DangerRedBrush}" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,0,0,16" Visibility="Collapsed">
+                                    <TextBlock x:Name="TxtLoginError" Text="Invalid username or password" Foreground="{StaticResource DangerRedBrush}" FontSize="12" TextWrapping="Wrap"/>
+                                </Border>
+
+                                <!-- Fields -->
+                                <TextBlock Text="USERNAME" Foreground="{StaticResource TextMutedBrush}" FontFamily="{StaticResource SegoeUIFont}" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                                <TextBox x:Name="TxtLoginUsername" Style="{StaticResource DarkTextBoxStyle}" Margin="0,0,0,16" Height="38" KeyDown="TxtLogin_KeyDown"/>
+
+                                <TextBlock Text="PASSWORD" Foreground="{StaticResource TextMutedBrush}" FontFamily="{StaticResource SegoeUIFont}" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                                <PasswordBox x:Name="TxtLoginPassword" Style="{StaticResource DarkPasswordBoxStyle}" Margin="0,0,0,24" Height="38" KeyDown="TxtLogin_KeyDown"/>
+
+                                <Button Style="{StaticResource PrimaryButtonStyle}" Content="LOG IN" Height="42" Click="BtnLogin_Click">
+                                    <Button.Effect>
+                                        <DropShadowEffect Color="#00FFC8" BlurRadius="12" ShadowDepth="0" Opacity="0.35"/>
+                                    </Button.Effect>
+                                </Button>
+                                
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                                    <TextBlock Text="Don't have an account? " Foreground="{StaticResource TextMutedBrush}" FontSize="13"/>
+                                    <TextBlock Text="Register here" Foreground="{StaticResource AccentTealBrush}" FontWeight="Bold" FontSize="13" Cursor="Hand" MouseLeftButtonDown="ToggleForm_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Register View -->
+                        <Grid x:Name="RegisterGrid" Visibility="Collapsed">
+                            <StackPanel>
+                                <TextBlock Text="Create Account" 
+                                           Foreground="{StaticResource TextPrimaryBrush}" 
+                                           FontFamily="{StaticResource SegoeUIFont}" 
+                                           FontSize="24" 
+                                           FontWeight="Bold"/>
+                                <TextBlock Text="Register a new system user." 
+                                           Foreground="{StaticResource TextMutedBrush}" 
+                                           FontFamily="{StaticResource SegoeUIFont}" 
+                                           FontSize="13" 
+                                           Margin="0,4,0,16"/>
+
+                                <!-- Error/Success Alert -->
+                                <Border x:Name="RegisterStatusBorder" Background="#22FF4C4C" BorderBrush="{StaticResource DangerRedBrush}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,12" Visibility="Collapsed">
+                                    <TextBlock x:Name="TxtRegisterStatus" Text="Please check input details" Foreground="{StaticResource DangerRedBrush}" FontSize="12" TextWrapping="Wrap"/>
+                                </Border>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Row 0: Full Name & Phone -->
+                                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,8,10">
+                                        <TextBlock Text="FULL NAME" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,4"/>
+                                        <TextBox x:Name="TxtRegFullName" Style="{StaticResource DarkTextBoxStyle}" Height="34"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="8,0,0,10">
+                                        <TextBlock Text="PHONE" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,4"/>
+                                        <TextBox x:Name="TxtRegPhone" Style="{StaticResource DarkTextBoxStyle}" Height="34"/>
+                                    </StackPanel>
+
+                                    <!-- Row 1: Email & Username -->
+                                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,8,10">
+                                        <TextBlock Text="EMAIL" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,4"/>
+                                        <TextBox x:Name="TxtRegEmail" Style="{StaticResource DarkTextBoxStyle}" Height="34"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="8,0,0,10">
+                                        <TextBlock Text="USERNAME" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,4"/>
+                                        <TextBox x:Name="TxtRegUsername" Style="{StaticResource DarkTextBoxStyle}" Height="34"/>
+                                    </StackPanel>
+
+                                    <!-- Row 2: Password & Confirm -->
+                                    <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,8,10">
+                                        <TextBlock Text="PASSWORD" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,4"/>
+                                        <PasswordBox x:Name="TxtRegPassword" Style="{StaticResource DarkPasswordBoxStyle}" Height="34"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="1" Margin="8,0,0,10">
+                                        <TextBlock Text="CONFIRM PASSWORD" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,4"/>
+                                        <PasswordBox x:Name="TxtRegConfirmPassword" Style="{StaticResource DarkPasswordBoxStyle}" Height="34"/>
+                                    </StackPanel>
+
+                                    <!-- Row 3: Role Selection -->
+                                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,16">
+                                        <TextBlock Text="ROLE" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,4"/>
+                                        <ComboBox x:Name="CmbRegRole" Style="{StaticResource DarkComboBox}" Height="34">
+                                            <ComboBoxItem Content="Customer" IsSelected="True"/>
+                                            <ComboBoxItem Content="Admin"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Button Style="{StaticResource PrimaryButtonStyle}" Content="REGISTER" Height="38" Click="BtnRegister_Click">
+                                    <Button.Effect>
+                                        <DropShadowEffect Color="#00FFC8" BlurRadius="12" ShadowDepth="0" Opacity="0.35"/>
+                                    </Button.Effect>
+                                </Button>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,5">
+                                    <TextBlock Text="Already have an account? " Foreground="{StaticResource TextMutedBrush}" FontSize="13"/>
+                                    <TextBlock Text="Sign in here" Foreground="{StaticResource AccentTealBrush}" FontWeight="Bold" FontSize="13" Cursor="Hand" MouseLeftButtonDown="ToggleForm_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Right Column: Brand Showcase Panel (Completely transparent) -->
+            <Grid Grid.Column="1">
+                <!-- Brand Content Panel -->
+                <Grid Margin="30">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Centered Logo, Stylized Two-Tone Title and Description -->
+                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <!-- Logo Container with no background glow -->
+                        <Grid Width="120" Height="120" Margin="0,0,0,20">
+                            <Image Source="/logo.png" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <!-- Stylized Brand Title -->
+                        <TextBlock FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="36" 
+                                   FontWeight="ExtraBold" 
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center">
+                            <Run Text="NEST" Foreground="#FFFFFF"/>
+                            <Run Text="FINDER" Foreground="{StaticResource AccentTealBrush}"/>
+                        </TextBlock>
+                        
+                        <Border Height="3" Width="60" Background="{StaticResource AccentTealBrush}" CornerRadius="1.5" Margin="0,15,0,20" HorizontalAlignment="Center"/>
+                        
+                        <TextBlock Text="Real Estate Redefined" 
+                                   Foreground="#FFFFFF" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="18" 
+                                   FontWeight="SemiBold" 
+                                   HorizontalAlignment="Center"/>
+                        
+                        <TextBlock Text="A premium, unified administration workspace designed to easily discover, list, and manage properties, customers, and transactions." 
+                                   Foreground="#B0B8C4" 
+                                   FontFamily="{StaticResource SegoeUIFont}" 
+                                   FontSize="13" 
+                                   TextWrapping="Wrap" 
+                                   TextAlignment="Center"
+                                   Margin="0,12,0,0"
+                                   LineHeight="18"/>
+                    </StackPanel>
+
+                    <!-- Footer Footnote -->
+                    <TextBlock Grid.Row="2" 
+                               Text="Nest-Finder Admin Portal © 2026" 
+                               Foreground="#8B949E" 
+                               FontFamily="{StaticResource SegoeUIFont}" 
+                               FontSize="11"
+                               HorizontalAlignment="Center"/>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!-- Global Floating Title Bar Control Buttons (Upper Right) -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,20,0" Grid.ColumnSpan="2">
+            <Button Style="{StaticResource TitlebarButtonStyle}" Width="30" Height="30" Click="BtnMinimize_Click" Background="Transparent" BorderThickness="0">
+                <icon:IconImage Icon="Minus" Foreground="{StaticResource TextPrimaryBrush}" Width="12" Height="12"/>
+            </Button>
+            <Button Style="{StaticResource TitlebarButtonStyle}" Width="30" Height="30" Click="BtnClose_Click" Background="Transparent" BorderThickness="0" Margin="5,0,0,0">
+                <icon:IconImage Icon="Times" Foreground="{StaticResource TextPrimaryBrush}" Width="12" Height="12"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</mah:MetroWindow>
