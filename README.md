@@ -101,9 +101,6 @@ Nest-Finder/
 
 ---
 
-## 📸 Screenshots & UI Showcase
-
-*Add your application screenshots here to wow recruiters on GitHub!*
 
 ---
 
